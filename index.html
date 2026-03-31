@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBESC | Coach Brooks Emotional Support Coalition</title>
+    
+    <!-- CDNs -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Geist+Mono:wght@100..900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --berner-black: #171717;
+            --berner-rust: #9A3412;
+            --berner-white: #F8FAFC;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--berner-white);
+            color: var(--berner-black);
+            scroll-behavior: smooth;
+            margin: 0;
+            padding: 0;
+        }
+        .serif { font-family: 'Fraunces', serif; }
+        .mono { font-family: 'Geist Mono', monospace; }
+        
+        .counter-glow {
+            text-shadow: 0 0 20px rgba(154, 52, 18, 0.3);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 0;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--berner-rust);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after, .nav-link-active::after {
+            width: 100%;
+        }
+
+        .btn-rust {
+            background-color: var(--berner-rust);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-rust:hover {
+            background-color: #7c2d12;
+            transform: translateY(-1px);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f1f1f1;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+            border-color: var(--berner-rust);
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="env,react">
+        const { useState, useEffect } = React;
+
+        const Icons = {
+            Shield: () => (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            ),
+            Message: () => (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+            ),
+            Heart: () => (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            ),
+            Bark: () => (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            ),
+            Refresh: () => (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            ),
+            Check: () => (
+                <svg className="w-8 h-8 text-[#9A3412]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                </svg>
+            ),
+            Question: () => (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            )
+        };
+
+        const INITIAL_FORUM_POSTS = [
+            { id: 1, author: "Anonymous", text: "He looked at me during my PR. I didn't even make eye contact, but he knew. He barked exactly at the lockout. My ego is bruised.", date: "2 hours ago", severity: 7 },
+            { id: 2, author: "Anonymous", text: "I tried to wear a hat today. Huge mistake. Coach Brooks tracked me from the water fountain to the locker room. I am now hiding in the sauna.", date: "5 hours ago", severity: 9 },
+            { id: 3, author: "Anonymous", text: "Is it normal for him to stand 15 feet away and just... judge? He doesn't come close, but his silence is louder than the bark.", date: "1 day ago", severity: 4 }
+        ];
+
+        const Navigation = ({ setPage, currentPage }) => (
+            <nav className="fixed top-0 w-full z-50 glass-nav">
+                <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+                    <div className="flex items-center gap-4 cursor-pointer" onClick={() => setPage('home')}>
+                        <div className="w-12 h-12 bg-[#171717] rounded-full flex flex-shrink-0 items-center justify-center text-white">
+                            <Icons.Shield />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="serif text-xl font-extrabold tracking-tight text-black whitespace-nowrap">
+                                Coach Brooks Emotional Support Coalition
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex gap-8">
+                        {['home', 'about', 'eligible', 'faq', 'forum', 'donate'].map(p => (
+                            <button 
+                                key={p}
+                                onClick={() => setPage(p)}
+                                className={`nav-link text-[10px] sm:text-xs uppercase tracking-[0.15em] font-extrabold transition-all duration-300 
+                                    ${currentPage === p 
+                                        ? 'text-[#9A3412] nav-link-active' 
+                                        : 'text-[#171717] hover:text-[#9A3412]'
+                                    }`}
+                            >
+                                {p === 'eligible' ? 'Am I Eligible?' : p}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </nav>
+        );
+
+        const FAQSection = () => {
+            const faqs = [
+                { q: "Does Brooks hate me?", a: "Not officially. His reactions are based on a complex internal algorithm involving your scent, your footwear, and your perceived level of entitlement to the gym floor." },
+                { q: "Can trust be earned?", a: "There have been isolated reports of peaceful proximity lasting upwards of 12 seconds. However, trust is non-cumulative; every entrance to the gym is a fresh security audit." },
+                { q: "Do treats help?", a: "They can improve diplomatic conditions. We recommend high-protein bribes. Note that receiving a treat does not constitute a friendship, only a temporary non-aggression pact." },
+                { q: "Why is he nice to everyone else?", a: "We ask that you not rush your healing. Comparing your journey to those of 'The Accepted' only hinders your emotional stabilization." },
+                { q: "Is this personal?", a: "Unfortunately, yes. But also maybe not. It is a deeply personal assessment of your general vibe that he then broadcasts publicly to the entire facility." },
+                { q: "I am a woman and he likes me. Should I join?", a: "No. You are part of the elite class. Please exit this coalition immediately. You are the source of our members' envy and confusion." },
+                { q: "Should I bark back?", a: "Only if you wish to be permanently blacklisted from CycleFit. We do not engage in vocal escalations; we remain stoic in the face of judgment." }
+            ];
+
+            return (
+                <section className="pt-40 pb-20 px-6 max-w-4xl mx-auto">
+                    <div className="mb-16">
+                        <span className="text-[#9A3412] font-black text-xs uppercase tracking-[0.3em]">Protocol & Guidance</span>
+                        <h2 className="serif text-5xl font-bold mt-2 text-black">Common Inquiries</h2>
+                        <div className="w-12 h-1.5 bg-[#9A3412] mt-6"></div>
+                    </div>
+                    
+                    <div className="space-y-6">
+                        {faqs.map((faq, i) => (
+                            <div key={i} className="bg-white border-2 border-gray-100 p-8 rounded-3xl card-hover">
+                                <h3 className="serif text-xl font-bold text-black mb-4 flex gap-4">
+                                    <span className="text-[#9A3412] mono font-bold">Q{i+1}.</span>
+                                    {faq.q}
+                                </h3>
+                                <div className="pl-12 border-l-2 border-gray-50">
+                                    <p className="text-gray-500 leading-relaxed text-sm">
+                                        {faq.a}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="mt-16 bg-[#171717] p-10 rounded-[2rem] text-center">
+                        <p className="text-gray-400 text-sm italic mb-0">
+                            "Still have questions? We recommend sitting quietly on a bench until he ignores you. Silence is the highest form of approval we currently offer."
+                        </p>
+                    </div>
+                </section>
+            );
+        };
+
+        const EligibilitySection = () => {
+            const [step, setStep] = useState(0);
+            const [isChecking, setIsChecking] = useState(false);
+            const [isConfirmed, setIsConfirmed] = useState(false);
+
+            const questions = [
+                "Have you been barked at within 10 seconds of entering TRAIN?",
+                "Have you mistaken temporary silence for acceptance?",
+                "Have you ever brought treats as part of a peacekeeping strategy?",
+                "Has Brooks been visibly nicer to the person next to you?",
+                "Do you currently feel you are on some kind of probation?",
+                "Do you avoid eye contact with the mirrors if he is reflected in them?",
+                "Have you ever apologized to him for the sound of a dropping weight?"
+            ];
+
+            const nextStep = () => {
+                if (step < questions.length - 1) {
+                    setStep(step + 1);
+                } else {
+                    setIsChecking(true);
+                    setTimeout(() => {
+                        setIsChecking(false);
+                        setIsConfirmed(true);
+                    }, 2500);
+                }
+            };
+
+            if (isConfirmed) {
+                return (
+                    <div className="py-32 px-6 max-w-2xl mx-auto text-center">
+                        <div className="bg-white border-4 border-[#9A3412] p-12 rounded-[2rem] shadow-2xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-4 opacity-10">
+                                <Icons.Shield />
+                            </div>
+                            <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-8">
+                                <Icons.Check />
+                            </div>
+                            <h2 className="serif text-4xl font-bold mb-4 text-black uppercase tracking-tight">Status: Accepted</h2>
+                            <p className="text-[#9A3412] font-black text-sm uppercase tracking-[0.2em] mb-8">Preliminary eligibility confirmed</p>
+                            <div className="h-px bg-gray-100 w-full mb-8"></div>
+                            <p className="text-gray-500 italic mb-8 leading-relaxed">
+                                "Based on your clinical data, your level of Brooks-induced psychological distress meets our Tier 1 Coalition criteria. You are officially on the long road to potentially being tolerated."
+                            </p>
+                            <button 
+                                onClick={() => window.location.reload()} 
+                                className="bg-[#171717] text-white px-10 py-4 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-[#9A3412] transition-colors"
+                            >
+                                Return to Coalition Mainframe
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (isChecking) {
+                return (
+                    <div className="py-48 px-6 text-center">
+                        <div className="inline-block animate-spin mb-8">
+                            <Icons.Refresh />
+                        </div>
+                        <h2 className="serif text-3xl font-bold text-black animate-pulse">Analyzing Diplomatic Standing...</h2>
+                        <p className="text-gray-400 mt-4 uppercase text-[10px] font-bold tracking-widest">Cross-referencing bark decibels with treat inventory</p>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="py-32 px-6 max-w-3xl mx-auto">
+                    <div className="mb-12">
+                        <div className="flex justify-between items-end mb-4">
+                            <div>
+                                <span className="text-[#9A3412] font-black text-xs uppercase tracking-[0.3em]">Intake Process</span>
+                                <h2 className="serif text-4xl font-bold text-black mt-2">Am I Eligible?</h2>
+                            </div>
+                            <span className="mono text-gray-300 text-sm">Question {step + 1}/{questions.length}</span>
+                        </div>
+                        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div 
+                                className="h-full bg-[#9A3412] transition-all duration-500" 
+                                style={{ width: `${((step + 1) / questions.length) * 100}%` }}
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-100 p-12 rounded-[2.5rem] shadow-sm text-center">
+                        <p className="serif text-2xl md:text-3xl font-bold text-black mb-12 leading-tight">
+                            "{questions[step]}"
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button 
+                                onClick={nextStep}
+                                className="flex-1 py-6 rounded-2xl bg-gray-50 border-2 border-transparent hover:border-[#9A3412] hover:bg-white text-black font-black uppercase text-xs tracking-widest transition-all"
+                            >
+                                Affirmative (Yes)
+                            </button>
+                            <button 
+                                onClick={nextStep}
+                                className="flex-1 py-6 rounded-2xl bg-gray-50 border-2 border-transparent hover:border-black hover:bg-white text-black font-black uppercase text-xs tracking-widest transition-all"
+                            >
+                                Negative (No)
+                            </button>
+                        </div>
+                        <p className="mt-12 text-[9px] text-gray-300 font-bold uppercase tracking-[0.2em]">
+                            All responses are encrypted. Brooks will not be notified of your honesty... probably.
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        const Hero = () => {
+            const [days, setDays] = useState(0);
+            const [hours, setHours] = useState(0);
+            const [minutes, setMinutes] = useState(48);
+            const [seconds, setSeconds] = useState(12);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setSeconds(s => {
+                        if (s === 59) {
+                            setMinutes(m => {
+                                if (m === 59) {
+                                    setHours(h => {
+                                        if (h === 23) {
+                                            setDays(d => d + 1);
+                                            return 0;
+                                        }
+                                        return h + 1;
+                                    });
+                                    return 0;
+                                }
+                                return m + 1;
+                            });
+                            return 0;
+                        }
+                        return s + 1;
+                    });
+                }, 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const handleReset = () => {
+                setDays(0);
+                setHours(0);
+                setMinutes(0);
+                setSeconds(0);
+            };
+
+            return (
+                <section className="pt-24 pb-20 px-6 max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+                    <div className="relative group">
+                        <div className="absolute -inset-4 bg-[#9A3412] opacity-5 rounded-3xl group-hover:opacity-10 transition-opacity"></div>
+                        <img 
+                            src="https://images.unsplash.com/photo-1554613251-2244f77c4495?auto=format&fit=crop&q=80&w=800" 
+                            alt="Coach Brooks (Bernese Mix)" 
+                            className="relative rounded-2xl grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl w-full h-[550px] object-cover border-4 border-white"
+                        />
+                        <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur px-6 py-4 rounded-xl border border-gray-100 shadow-xl">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9A3412] mb-1">Subject: Coach Brooks</p>
+                            <p className="serif text-lg italic text-black font-semibold">"Equality is a myth in the squat rack."</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-8">
+                        <div>
+                            <span className="inline-block px-4 py-1 rounded-full bg-red-50 text-[#9A3412] text-[10px] font-black tracking-widest uppercase mb-4 animate-pulse-slow">
+                                Status: Actively Judging
+                            </span>
+                            <h1 className="serif text-6xl lg:text-7xl font-bold leading-tight mb-6 text-black">
+                                For the Barked At, the Judged, and the <span className="text-[#9A3412]">Ignored</span>.
+                            </h1>
+                            <p className="text-xl text-gray-500 leading-relaxed max-w-xl">
+                                Welcome to the Coalition. If you've been barked at, stared down, or intentionally ignored by Coach Brooks, this is your harbor.
+                            </p>
+                        </div>
+
+                        <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-lg shadow-gray-200/50">
+                            <h3 className="mono text-[11px] font-black uppercase tracking-widest text-[#171717] mb-6 flex items-center justify-between border-b border-gray-50 pb-4">
+                                <span className="flex items-center gap-2">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#9A3412] shadow-sm"></span>
+                                    Current Non Barking Streak
+                                </span>
+                                <span className="text-[9px] text-gray-400 font-bold">V.4.2 LIVE</span>
+                            </h3>
+                            <div className="flex gap-2 items-center">
+                                <div className="flex-1 text-center">
+                                    <div className="mono text-5xl xl:text-6xl font-black text-black counter-glow">{days.toString().padStart(2, '0')}</div>
+                                    <div className="text-[9px] uppercase font-black text-gray-400 mt-2">Days</div>
+                                </div>
+                                <div className="text-3xl font-light text-gray-200 mb-6">:</div>
+                                <div className="flex-1 text-center">
+                                    <div className="mono text-5xl xl:text-6xl font-black text-black counter-glow">{hours.toString().padStart(2, '0')}</div>
+                                    <div className="text-[9px] uppercase font-black text-gray-400 mt-2">Hours</div>
+                                </div>
+                                <div className="text-3xl font-light text-gray-200 mb-6">:</div>
+                                <div className="flex-1 text-center">
+                                    <div className="mono text-5xl xl:text-6xl font-black text-black counter-glow">{minutes.toString().padStart(2, '0')}</div>
+                                    <div className="text-[9px] uppercase font-black text-gray-400 mt-2">Mins</div>
+                                </div>
+                                <div className="text-3xl font-light text-gray-200 mb-6">:</div>
+                                <div className="flex-1 text-center">
+                                    <div className="mono text-5xl xl:text-6xl font-black text-[#9A3412] counter-glow">{seconds.toString().padStart(2, '0')}</div>
+                                    <div className="text-[9px] uppercase font-black text-gray-400 mt-2">Secs</div>
+                                </div>
+                            </div>
+                            
+                            <div className="mt-8 pt-8 border-t border-gray-50 flex flex-col gap-4">
+                                <button 
+                                    onClick={handleReset}
+                                    className="w-full bg-[#171717] hover:bg-[#9A3412] text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-[0.2em] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                                >
+                                    <Icons.Refresh />
+                                    Submit for Reconsideration
+                                </button>
+                                <p className="text-[11px] text-gray-400 italic text-center leading-relaxed">
+                                    Record reflects temporary tolerance only and should not be interpreted as full acceptance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const AboutSection = () => (
+            <section className="py-24 bg-white px-6 border-y border-gray-100">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-16">
+                        <span className="text-[#9A3412] font-black text-xs uppercase tracking-[0.3em]">OUR FOUNDATION</span>
+                        <h2 className="serif text-4xl font-bold mt-2 text-black">Who We Are</h2>
+                        <div className="w-12 h-1.5 bg-[#9A3412] mx-auto mt-6"></div>
+                    </div>
+                    <div className="prose prose-xl text-gray-600 space-y-8 leading-relaxed max-w-none">
+                        <p>
+                            Founded in <span className="font-bold text-black">June 2025</span>, the <span className="font-bold text-black">Coach Brooks Emotional Support Coalition (CBESC)</span> was created in response to an urgent and deeply overlooked issue affecting members of the TRAIN and CycleFit community: the emotional toll of being barked at, professionally ignored, or indefinitely evaluated by Coach Brooks.
+                        </p>
+                        <p>
+                            What began as a few isolated incidents soon revealed a broader pattern. Good people were showing up to TRAIN on time, following their programming, putting in honest work, and still being met with concern, suspicion, or vocal correction from a dog with extremely high standards and no interest in explaining them.
+                        </p>
+                        <p>
+                            Coach Brooks is more than a gym dog. He is a respected tricolor presence within TRAIN, a selective authority figure within the wider CycleFit environment, and a quiet but powerful reminder that access, trust, and affection must all be earned. While some are welcomed with immediate warmth, others are placed into a longer and more character-building review process.
+                        </p>
+                        <p>
+                            CBESC exists for those individuals. For the member who got barked at before even reaching the first machine. For the one who believed a brief peaceful interaction meant things were finally turning around. For the one who now carries treats not as a kindness, but as part of a structured diplomatic effort. And for every person who has come to realize that Brooks may, in fact, hold more operational authority than anyone at the front desk.
+                        </p>
+                        <p>
+                            We are a coalition built on resilience, emotional honesty, and the belief that healing begins when people are given space to say, “I really thought today would be different.”
+                        </p>
+                        
+                        <div className="grid md:grid-cols-2 gap-8 py-12">
+                            <div className="bg-[#171717] p-8 rounded-2xl text-white">
+                                <h4 className="serif text-xl font-bold mb-3 text-[#9A3412] uppercase tracking-wide">Our Mission</h4>
+                                <p className="text-sm text-gray-300 leading-relaxed">
+                                    To provide support, education, and emotional stabilization for TRAIN and CycleFit members navigating the unique psychological impact of being barked at, monitored, or placed on indefinite probation by Coach Brooks.
+                                </p>
+                            </div>
+                            <div className="border-2 border-gray-100 p-8 rounded-2xl">
+                                <h4 className="serif text-xl font-bold mb-3 text-[#9A3412] uppercase tracking-wide">Our Philosophy</h4>
+                                <p className="text-sm text-gray-500 leading-relaxed">
+                                    We do not believe Brooks is unfair. We believe Brooks is discerning. He is not excluding people. He is refining them. Our role is not to challenge his judgment, but to help our members grow through it with dignity, patience, and appropriately presented treats.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Forum = () => {
+            const [posts, setPosts] = useState(INITIAL_FORUM_POSTS);
+            const [newPost, setNewPost] = useState("");
+            const [severity, setSeverity] = useState(5);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!newPost) return;
+                const post = {
+                    id: Date.now(),
+                    author: "Anonymous",
+                    text: newPost,
+                    date: "Just now",
+                    severity: severity
+                };
+                setPosts([post, ...posts]);
+                setNewPost("");
+            };
+
+            return (
+                <section className="pt-40 pb-20 px-6 max-w-4xl mx-auto">
+                    <div className="flex items-center justify-between mb-12">
+                        <div>
+                            <h2 className="serif text-4xl font-bold text-black">The Kennel Room</h2>
+                            <p className="text-gray-400 text-sm mt-1 uppercase tracking-widest font-semibold">Lived Experiences</p>
+                        </div>
+                        <div className="flex items-center gap-2 text-[#9A3412] font-bold">
+                            <Icons.Message />
+                            <span className="mono">{posts.length}</span>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="bg-white border-2 border-gray-100 p-8 rounded-3xl shadow-sm mb-12">
+                        <h3 className="serif text-xl font-bold mb-6 text-black">Log a New Interaction</h3>
+                        <textarea 
+                            value={newPost}
+                            onChange={(e) => setNewPost(e.target.value)}
+                            className="w-full h-32 p-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-2 focus:ring-[#9A3412] focus:border-transparent outline-none transition-all placeholder:text-gray-300"
+                            placeholder="Describe the incident... (e.g., 'He barked when I looked at the dumbbell rack')"
+                        ></textarea>
+                        
+                        <div className="mt-8 flex flex-wrap items-center justify-between gap-6">
+                            <div className="flex items-center gap-6 bg-gray-50 px-6 py-3 rounded-full border border-gray-100">
+                                <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter">Bark Decibels:</label>
+                                <input 
+                                    type="range" min="1" max="10" 
+                                    value={severity} 
+                                    onChange={(e) => setSeverity(parseInt(e.target.value))}
+                                    className="accent-[#9A3412] w-24"
+                                />
+                                <span className="mono font-bold text-[#9A3412]">{severity}/10</span>
+                            </div>
+                            <button className="btn-rust px-10 py-4 rounded-full font-black uppercase text-[11px] tracking-[0.2em] shadow-lg shadow-orange-900/20">
+                                Submit Anonymously
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className="space-y-6">
+                        {posts.map(post => (
+                            <div key={post.id} className="bg-white p-8 rounded-3xl card-hover">
+                                <div className="flex justify-between items-start mb-6">
+                                    <div>
+                                        <span className="text-[10px] font-black uppercase text-[#9A3412] tracking-widest">{post.author}</span>
+                                        <p className="text-[10px] text-gray-300 font-bold uppercase mt-1">{post.date}</p>
+                                    </div>
+                                    <div className="bg-[#171717] px-3 py-1 rounded text-[10px] font-black text-white uppercase tracking-tighter">
+                                        Intensity: {post.severity}
+                                    </div>
+                                </div>
+                                <p className="text-gray-600 leading-relaxed italic text-lg">"{post.text}"</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            );
+        };
+
+        const Donate = () => (
+            <section className="py-24 px-6 max-w-4xl mx-auto text-center">
+                <div className="bg-[#171717] text-white rounded-[3rem] p-12 lg:p-20 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                        <Icons.Heart />
+                    </div>
+                    <span className="text-[#9A3412] font-black text-xs uppercase tracking-[0.4em] mb-4 block">Operation: Silence</span>
+                    <h2 className="serif text-5xl font-bold mb-6">Bribe the Coach.</h2>
+                    <p className="text-gray-400 text-lg mb-12 max-w-xl mx-auto leading-relaxed">
+                        100% of proceeds go towards high-value treats and distractions to keep Brooks occupied while you do your heavy sets. Your contribution literally buys temporary peace.
+                    </p>
+                    
+                    <div className="grid sm:grid-cols-3 gap-6 mb-12">
+                        {[
+                            { title: "The Quiet Snack", price: "$5", desc: "5 mins of peace" },
+                            { title: "The Chew Toy", price: "$25", desc: "One full hour of silence" },
+                            { title: "The Salmon Bribe", price: "$100", desc: "He might ignore you" }
+                        ].map((tier, i) => (
+                            <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition-colors cursor-pointer group">
+                                <h4 className="font-black text-[10px] uppercase text-[#9A3412] mb-3 group-hover:text-white transition-colors tracking-widest">{tier.title}</h4>
+                                <div className="text-4xl font-black mb-3 italic">{tier.price}</div>
+                                <p className="text-[10px] text-gray-500 uppercase font-bold">{tier.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <button className="bg-white text-black px-12 py-5 rounded-full font-black uppercase text-xs tracking-[0.3em] hover:bg-[#9A3412] hover:text-white transition-all transform hover:scale-105">
+                        Purchase Silence
+                    </button>
+                    <p className="mt-8 text-[10px] text-gray-500 font-bold uppercase tracking-widest">Payments processed via PawPal. No refunds for late-set barks.</p>
+                </div>
+            </section>
+        );
+
+        const Footer = () => (
+            <footer className="bg-white border-t border-gray-100 py-16 px-6">
+                <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white">
+                            <Icons.Shield />
+                        </div>
+                        <span className="serif font-black tracking-tighter text-lg">CBESC</span>
+                    </div>
+                    <p className="text-[11px] text-gray-300 font-bold uppercase tracking-widest text-center">
+                        © 2025 Coach Brooks Emotional Support Coalition. Brooks is a good boy, he just has standards.
+                    </p>
+                    <div className="flex gap-8 text-[10px] font-black uppercase text-gray-400 tracking-[0.2em]">
+                        <a href="#" className="hover:text-[#9A3412] transition-colors">Safety</a>
+                        <a href="#" className="hover:text-[#9A3412] transition-colors">Terms</a>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        const App = () => {
+            const [page, setPage] = useState('home');
+
+            return (
+                <div className="min-h-screen">
+                    <Navigation setPage={setPage} currentPage={page} />
+                    
+                    <main>
+                        {page === 'home' && (
+                            <>
+                                <Hero />
+                                <div className="bg-[#171717] py-24">
+                                    <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-16">
+                                        <div className="space-y-4">
+                                            <div className="text-[#9A3412]"><Icons.Bark /></div>
+                                            <h3 className="serif text-2xl font-bold text-white">Bark Analysis</h3>
+                                            <p className="text-gray-400 text-sm leading-relaxed">Understand the difference between a 'Warning Woof' and an 'Identity Crisis Howl' directed at your squat form.</p>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="text-white"><Icons.Shield /></div>
+                                            <h3 className="serif text-2xl font-bold text-white">Tan Zone Mapping</h3>
+                                            <p className="text-gray-400 text-sm leading-relaxed">A comprehensive heatmap of gym floor areas currently sanctioned for male occupancy by the Coach.</p>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="text-[#9A3412]"><Icons.Heart /></div>
+                                            <h3 className="serif text-2xl font-bold text-white">Group Healing</h3>
+                                            <p className="text-gray-400 text-sm leading-relaxed">Weekly peer-led Zoom calls for men who have been personally victimized by Brooks' judgmental silence.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {page === 'about' && <AboutSection />}
+                        {page === 'eligible' && <EligibilitySection />}
+                        {page === 'faq' && <FAQSection />}
+                        {page === 'forum' && <Forum />}
+                        {page === 'donate' && <Donate />}
+                    </main>
+
+                    <Footer />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
