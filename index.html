@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CBESC | Coach Brooks Emotional Support Coalition</title>
+    <link rel="icon" href="favicon.ico">
     
     <!-- CDNs -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -206,7 +207,7 @@
                 <div className="max-w-7xl mx-auto px-4 py-2 md:px-6 md:h-24 flex flex-col md:flex-row items-center justify-between md:gap-4">
                     <div className="flex items-center gap-2 md:gap-4 cursor-pointer flex-shrink-0" onClick={() => setPage('home')}>
                         <div className="w-8 h-8 md:w-12 md:h-12 bg-[#171717] rounded-full flex flex-shrink-0 items-center justify-center text-white">
-                            <Icons.Shield />
+                            <img src="logo.PNG" alt="CBESC Logo" className="w-full h-full object-contain" />
                         </div>
                         <div className="flex flex-col">
                             <span className="serif text-[10px] md:text-xl font-extrabold tracking-tight text-black whitespace-nowrap leading-tight text-center md:text-left">
@@ -747,4 +748,4 @@
         root.render(<App />);
     </script>
 </body>
-</html>
+</>
