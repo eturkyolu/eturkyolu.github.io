@@ -35,7 +35,7 @@ padding: 0;
 .mono { font-family: 'Geist Mono', monospace; }
 
 .counter-glow {
-text-shadow: 0 0 20px rgba(154, 52, 18, 0.3);
+text-shadow: 0 0 30px rgba(154, 52, 18, 0.4);
 }
 
 .glass-nav {
@@ -305,7 +305,7 @@ Current Non Barking Streak
 {[{v: days, l:'Days'}, {v: hours, l:'Hours'}, {v: minutes, l:'Mins'}, {v: seconds, l:'Secs'}].map((item, i) => (
 <React.Fragment key={item.l}>
 <div className="flex-1 text-center">
-<div className={`mono text-2xl md:text-4xl lg:text-5xl font-black counter-glow ${i === 3 ? 'text-[#9A3412]' : 'text-black'}`}>
+<div className={`mono text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter counter-glow ${i === 3 ? 'text-[#9A3412]' : 'text-black'}`}>
 {item.v.toString().padStart(2, '0')}
 </div>
 <div className="text-[8px] uppercase font-black text-gray-400 mt-1">{item.l}</div>
