@@ -551,16 +551,82 @@ Negative (No)
 };
 
 const Forum = () => {
-const [posts, setPosts] = useState(INITIAL_FORUM_POSTS);
-const [newPost, setNewPost] = useState("");
+    const [posts, setPosts] = useState(INITIAL_FORUM_POSTS);
+    const [newPost, setNewPost] = useState("");
+    const [severity, setSeverity] = useState(5);
 
-const handleSubmit = (e) => {
-e.preventDefault();
-if (!newPost) return;
-setPosts([{ id: Date.now(), author: "Anonymous", text: newPost, date: "Just now", severity: 5 }, ...posts]);
-setNewPost("");
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!newPost) return;
+        const post = {
+            id: Date.now(),
+            author: "Anonymous",
+            text: newPost,
+            date: "Just now",
+            severity: severity
+        };
+        setPosts([post, ...posts]);
+        setNewPost("");
+    };
+
+    return (
+        <section className="pt-40 pb-20 px-6 max-w-4xl mx-auto">
+            <div className="flex items-center justify-between mb-12">
+                <div>
+                    <h2 className="serif text-4xl font-bold text-black">The Kennel Room</h2>
+                    <p className="text-gray-400 text-sm mt-1 uppercase tracking-widest font-semibold">Lived Experiences</p>
+                </div>
+                <div className="flex items-center gap-2 text-[#9A3412] font-bold">
+                    <Icons.Message />
+                    <span className="mono">{posts.length}</span>
+                </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="bg-white border-2 border-gray-100 p-8 rounded-3xl shadow-sm mb-12">
+                <h3 className="serif text-xl font-bold mb-6 text-black">Log a New Interaction</h3>
+                <textarea 
+                    value={newPost}
+                    onChange={(e) => setNewPost(e.target.value)}
+                    className="w-full h-32 p-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-2 focus:ring-[#9A3412] focus:border-transparent outline-none transition-all placeholder:text-gray-300"
+                    placeholder="Describe the incident... (e.g. 'He barked when I looked at the dumbbell rack')"
+                ></textarea>
+                
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-6">
+                    <div className="flex items-center gap-6 bg-gray-50 px-6 py-3 rounded-full border border-gray-100">
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter">Bark Decibels:</label>
+                        <input 
+                            type="range" min="1" max="10" 
+                            value={severity} 
+                            onChange={(e) => setSeverity(parseInt(e.target.value))}
+                            className="accent-[#9A3412] w-24"
+                        />
+                        <span className="mono font-bold text-[#9A3412]">{severity}/10</span>
+                    </div>
+                    <button className="btn-rust px-10 py-4 rounded-full font-black uppercase text-[11px] tracking-[0.2em] shadow-lg shadow-orange-900/20">
+                        Submit Anonymously
+                    </button>
+                </div>
+            </form>
+
+            <div className="space-y-6">
+                {posts.map(post => (
+                    <div key={post.id} className="bg-white p-8 rounded-3xl card-hover">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <span className="text-[10px] font-black uppercase text-[#9A3412] tracking-widest">{post.author}</span>
+                                <p className="text-[10px] text-gray-300 font-bold uppercase mt-1">{post.date}</p>
+                            </div>
+                            <div className="bg-[#171717] px-3 py-1 rounded text-[10px] font-black text-white uppercase tracking-tighter">
+                                Intensity: {post.severity}
+                            </div>
+                        </div>
+                        <p className="text-gray-600 leading-relaxed italic text-lg">"{post.text}"</p>
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
 };
-
 return (
 <section className="pt-32 md:pt-40 pb-20 px-6 max-w-4xl mx-auto">
 <h2 className="serif text-4xl font-bold text-black mb-12">The Kennel Room</h2>
