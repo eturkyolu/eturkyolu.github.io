@@ -206,12 +206,9 @@
             <nav className="fixed top-0 w-full z-50 glass-nav">
                 <div className="max-w-7xl mx-auto px-4 py-2 md:px-6 md:h-24 flex flex-col md:flex-row items-center justify-between md:gap-4">
                     <div className="flex items-center gap-2 md:gap-4 cursor-pointer flex-shrink-0" onClick={() => setPage('home')}>
-                        <div className="w-8 h-8 md:w-12 md:h-12 bg-[#171717] rounded-full flex flex-shrink-0 items-center justify-center text-white">
-                            <img 
-                                  src="logo.PNG" 
-                                  alt="CBESC Logo" 
-                                  className="h-12 md:h-16 w-auto object-contain" 
-                            />
+                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden">
+                            <img src="logo.PNG" className="w-full h-full object-cover" />
+
                         </div>
                         <div className="flex flex-col">
                             <span className="serif text-[10px] md:text-xl font-extrabold tracking-tight text-black whitespace-nowrap leading-tight text-center md:text-left">
