@@ -680,41 +680,63 @@ const FAQSection = () => {
         };
 
         const Donate = () => (
-            <section className="pt-32 md:pt-40 pb-20 px-6 max-w-4xl mx-auto">
-                <div className="bg-[#171717] text-white rounded-[3rem] p-8 md:p-16">
-                    <div className="mb-10">
-                        <span className="text-[#9A3412] font-black text-xs uppercase tracking-[0.3em] mb-2 block">SUPPORT THE MISSION</span>
-                        <p className="text-gray-300 text-sm italic leading-relaxed">At the Coach Brooks Emotional Support Coalition, we believe support should extend beyond helping members recover from selective barking and cautious surveillance.</p>
+    <section className="pt-24 md:pt-32 pb-16 px-6 max-w-4xl mx-auto fade-in">
+        <div className="bg-[#171717] text-white rounded-[4rem] p-8 md:p-14 shadow-2xl border border-white/5 ring-1 ring-white/10 relative overflow-hidden">
+            {/* Background Detail */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#9A3412]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+            
+            <div className="relative z-10">
+                <div className="mb-12">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="h-0.5 w-10 bg-[#9A3412]"></div>
+                        <span className="text-[#9A3412] font-black text-[10px] uppercase tracking-[0.5em]">SUPPORT THE MISSION</span>
                     </div>
+                    <p className="text-gray-400 text-base md:text-lg italic leading-relaxed max-w-2xl serif">
+                        At the Coach Brooks Emotional Support Coalition, we believe support should extend beyond helping members recover from selective barking and cautious surveillance.
+                    </p>
+                </div>
 
-                    <h3 className="serif text-2xl md:text-3xl font-bold mb-6 text-white">Honoring a Trusted Coalition Ally: Sarah</h3>
-                    <div className="space-y-6 text-gray-300 text-sm md:text-lg leading-relaxed mb-12">
+                <div className="mb-14">
+                    <h3 className="serif text-2xl md:text-4xl font-bold mb-6 text-white leading-tight">Honoring a Trusted Coalition Ally: Sarah</h3>
+                    <div className="space-y-6 text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl">
                         <p>We are proud to recognize Sarah, a leader within the TRAIN and CycleFit community and the mother of Coach Brooks himself, as she fundraises for the Multiple Myeloma Research Foundation (MMRF) while training for the Chicago Marathon.</p>
-                        <p className="font-bold text-[#9A3412] italic">This is a cause far more important than our shared bark related hardship, and the coalition is proud to direct support toward it.</p>
-                    </div>
-                    
-                    <div className="grid gap-8 max-w-md mx-auto mb-16">
-                        <div className="space-y-3">
-                            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest block text-center">Support Sarah's MMRF Fundraiser</span>
-                            <button className="btn-rust w-full py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-orange-950/40">Donate Through Sarah</button>
-                        </div>
-                        <div className="space-y-3">
-                            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest block text-center">Support the broader CycleFit community</span>
-                            <button className="w-full py-5 rounded-2xl border-2 border-gray-700 hover:border-[#9A3412] hover:text-[#9A3412] transition-colors font-black uppercase text-xs tracking-widest">Donate Through CycleFit</button>
-                        </div>
-                    </div>
-
-                    <div className="border-t border-white/5 pt-8">
-                        <p className="text-[10px] text-gray-500 leading-relaxed text-center italic">
-                            Disclaimer: The coalition cannot officially confirm any relationship between charitable giving and Brooks related progress, though optimism remains high. Donations do not guarantee improved standing with Brooks, but many believe they may contribute to more favorable diplomatic conditions.
-                        </p>
-                        <div className="mt-4 flex flex-col gap-2">
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">All proceeds for MMRF go directly to the foundation through Sarah’s marathon fundraiser.</p>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">Charitable giving is appreciated by the coalition and may or may not be noted by Brooks.</p>
-                        </div>
+                        <p className="font-bold text-[#9A3412] italic text-xl">This is a cause far more important than our shared bark related hardship, and the coalition is proud to direct support toward it.</p>
                     </div>
                 </div>
-            </section>
+                
+                <div className="flex flex-col gap-6 mb-16 max-w-2xl mx-auto">
+                    <div className="bg-white/5 rounded-3xl p-8 border border-white/10 flex flex-col items-center text-center group hover:border-[#9A3412]/50 transition-all">
+                        <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-6 block">Support Sarah's MMRF Fundraiser</span>
+                        <a 
+                            href="https://www.instagram.com/sarah.pezzino/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="btn-rust w-full py-5 rounded-2xl font-black uppercase text-xs tracking-widest block shadow-2xl shadow-orange-950/40"
+                        >
+                            Donate Through Sarah
+                        </a>
+                    </div>
+                    <div className="bg-white/5 rounded-3xl p-8 border border-white/10 flex flex-col items-center text-center group hover:border-white/30 transition-all">
+                        <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-6 block">Support the broader CycleFit community</span>
+                        <a 
+                            href="https://www.instagram.com/cyclefit_lehighvalley/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="w-full py-5 rounded-2xl border-2 border-white/20 hover:border-[#9A3412] hover:bg-white hover:text-black transition-all font-black uppercase text-xs tracking-widest block"
+                        >
+                            Donate Through CycleFit
+                        </a>
+                    </div>
+                </div>
+
+                <div className="bg-white/[0.03] p-8 rounded-[2rem] border border-white/5">
+                    <p className="text-[11px] md:text-xs text-gray-400 leading-relaxed text-center italic font-bold max-w-3xl mx-auto">
+                        Disclaimer: The coalition cannot officially confirm any relationship between charitable giving and Brooks related progress, though optimism remains high. Donations do not guarantee improved standing with Brooks, but many believe they may contribute to more favorable diplomatic conditions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
         );
 
         const Footer = () => (
